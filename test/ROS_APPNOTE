@@ -1,0 +1,58 @@
+source /home/seeing/catkin_ws/devel/setup.bash
+export ROS_HOSTNAME=seeing-virtual-machine.local
+export ROS_MASTER_URI=http://seeing-desktop.local:11311
+
+roslaunch seeing_sim_car seeing_sim_car_hector_mapping.launch
+roslaunch seeing_sim_car seeing_sim_car_move_base.launch
+roslaunch seeing_sim_car seeing_sim_car_view_nav.launch
+
+ssh seeing-desktop.local -l root
+
+
+roslaunch urdf_tutorial xacrodisplay.launch model:=seeing_sim_car.xacro  
+
+#add swap patition,when compiler error as usual
+dd if=/dev/zero of=/swapfile1 bs=1024 count=1572864
+mkswap /swapfile1
+chown root:root /swapfile1
+chmod 0600 /swapfile1
+swapon /swapfile1
+
+#sync time
+ntpdate -b seeing-virtual-machine.local
+
+#ros commands
+
+source /opt/ros/kinetic/setup.bash
+source /root/ros_catkin_ws/devel/setup.bash
+
+export ROS_HOSTNAME=seeing-desktop.local
+export ROS_MASTER_URI=http://seeing-desktop.local:11311
+
+roslaunch rplidar_ros rplidar.launch
+
+rostopic pub -1 /cmd_vel geometry_msgs/Twist '{linear: {x: 0.5,y: 0,z: 0},angular: {x: 0,y: 0,z: 0}}'
+
+rostopic pub -r 10 /cmd_vel geometry_msgs/Twist '{linear: {x: 0.5,y: 0,z: 0},angular: {x: 0,y: 0,z: 0}}'
+
+rostopic pub -r 10 /cmd_vel geometry_msgs/Twist '{linear: {x: 0.5,y: 0,z: 0},angular: {x: 0,y: 0,z: 0.5}}'
+
+
+
+#seeing simple car startup
+roslaunch seeing_sim_car seeing_sim_car_base.launch
+roslaunch seeing_sim_car seeing_sim_car_lidar.launch
+roslaunch seeing_sim_car seeing_sim_car_mapping.launch
+
+roslaunch seeing_sim_car seeing_sim_car_hector_mapping.launch
+
+roslaunch seeing_sim_car seeing_sim_car_move_base.launch
+
+roslaunch seeing_sim_car seeing_sim_car_view_nav.launch
+
+
+#calibate car
+roslaunch seeing_sim_car seeing_sim_car_base.launch
+cd /root/ros_catkin_ws/src/rbx1/rbx1_nav/nodes & rosrun rbx1_nav calibrate_linear.py
+cd /root/ros_catkin_ws/src/rbx1/rbx1_nav/nodes & rosrun rbx1_nav calibrate_angular.py
+rosrun rqt_reconfigure rqt_reconfigure
