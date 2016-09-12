@@ -1,0 +1,10 @@
+<launch>  
+  <param name="/use_sim_time" value="false"/>
+  
+  <!-- mobile base setting -->
+  <include file="$(find seeing_sim_car)/launch/includes/seeing_sim_car_base.launch.xml">
+  </include>
+  
+  <include file="$(find seeing_sim_car)/launch/includes/seeing_sim_car_description.launch.xml">
+  </include>
+</launch>

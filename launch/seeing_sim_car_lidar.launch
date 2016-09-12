@@ -1,0 +1,4 @@
+<launch>
+  <include file="$(find seeing_sim_car)/launch/includes/seeing_sim_car_rplidar.launch.xml" />
+  
+</launch>

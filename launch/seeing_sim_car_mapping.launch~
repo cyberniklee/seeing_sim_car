@@ -1,0 +1,5 @@
+<launch>
+  <include file="$(find seeing_sim_car)/launch/includes/seeing_sim_car_gmapping.launch.xml" />
+  <include file="$(find seeing_sim_car)/launch/includes/seeing_sim_car_move_base.launch.xml" />
+  
+</launch>

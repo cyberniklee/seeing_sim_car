@@ -1,0 +1,9 @@
+<launch>
+<!--
+  <node pkg="seeing_sim_car" type="controller.py" name="seeing_sim_car_base" output="screen">
+  </node>
+-->
+	<node name="arduino" pkg="seeing_sim_car" type="arduino_node.py" output="screen">
+		<rosparam file="$(find seeing_sim_car)/config/arduino_params.yaml" command="load" />
+	</node>
+</launch>
